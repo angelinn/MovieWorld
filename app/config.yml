@@ -29,3 +29,14 @@ template: "simple"
 # For session support enable the following line and see Dancer::Session
 # session: "YAML"
 
+# config.yml
+plugins:
+#     'Auth::Facebook':
+#         application_id:     "858996744177704"
+#         application_secret: "37e01af07d0663ff9dce75daced565ce"
+#         callback_url:       "http://localhost:3000/auth/facebook/callback"
+#         callback_success:   "/"
+#         callback_fail:      "/fail"
+#         scope:              "email friends"
+
+session: 'YAML'

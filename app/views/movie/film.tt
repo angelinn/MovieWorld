@@ -1,0 +1,49 @@
+ <section class="container">
+	<h1> <% title %> </h1>
+	<hr />
+
+	<div class="row">
+		<div class="col-md-2">
+			<img src="<% cover %>" />
+		</div>
+
+		<div class="panel panel-success col-md-offset-3">
+			<div class="panel-heading">
+				Storyline
+			</div>
+
+			<div class="panel-body">
+				<% storyline %>
+			</div>
+		</div>
+	</div>
+	<table class="table table-striped ">
+		<tbody>
+			<tr>
+				<td>Language:</td>
+				<td><% language %></td>
+			</tr>
+			<tr>
+				<td>Genre:</td>
+				<td><% genres %></td>
+			</tr>
+			<tr>
+				<td>Year:</td>
+				<td><% year %></td>
+			</tr>
+			<tr>
+				<td>Duration:</td>
+				<td><% duration %></td>
+			</tr>
+			<tr>
+				<td>Awards:</td>
+				<td><% awards %></td>
+			</tr>
+			<tr>
+				<td>Country:</td>
+				<td><% country %></td>
+			</tr>
+		</tbody>
+	</table>
+	<strong class="pull-right text-bold">View the movie in <a href="http://www.imdb.com/title/tt<% code %>/"> IMDB </a>!</strong>
+</section>

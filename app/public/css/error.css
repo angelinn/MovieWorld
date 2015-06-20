@@ -68,3 +68,8 @@ pre.error {
     border-bottom: 1px solid #eee;
 }
 
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,22 @@
+<section class="container">
+	<div class="row">
+		<div class="col-md-offset-4 col-md-4">
+			<form method="post">
+				<h3> Login </h3>
+				<hr />
+				<div class="form-group">
+					<label> Username </label>
+					<input type="text" class="form-control" name="username" />
+				</div>
+
+				<div class="form-group">
+					<label> Password </label>
+					<input type="password" class="form-control" name="password" />
+				</div>
+				<hr/>
+				<button type="submit" class="btn btn-success"> Login </button>
+				<a href="/forgotpassword" class="pull-right a-bit-lower" > Forgot Password ? </a>
+			</form>
+		</div>
+	</div>
+</section>

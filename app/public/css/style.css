@@ -18,3 +18,7 @@ body {
 .navbar-default .navbar-nav > li > a {
   color: #ffffff;
 }
+
+.a-bit-lower {
+	margin-top: 12px;
+}

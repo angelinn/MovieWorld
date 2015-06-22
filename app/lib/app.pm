@@ -6,6 +6,7 @@ use warnings;
 
 use Dancer ':syntax';
 #use Dancer::Plugin::Auth::Facebook;
+use Dancer::Plugin::Auth::Extensible;
 use IMDB::Film;
 
 our $VERSION = '0.1';
@@ -39,13 +40,21 @@ get '/alt' => sub {
 	template 'movie/movie_alt';
 };
 
-get '/login' => sub {
+sub login_page_handler {
 	template 'account/login';
-};
+}
 
-get '/register' => sub {
-	template 'account/register';
-};
+sub permission_denied_page_handler {
+	template 'account/denied';
+}
+
+# get '/login' => sub {
+# 	template 'account/login';
+# };
+
+# get '/register' => sub {
+# 	template 'account/register';
+# };
 
 # auth_fb_init();
  

@@ -27,10 +27,8 @@ template: "simple"
 #     end_tag:   '%]'
 
 # For session support enable the following line and see Dancer::Session
-# session: "YAML"
+session: "YAML"
 
-# config.yml
-plugins:
 #     'Auth::Facebook':
 #         application_id:     "858996744177704"
 #         application_secret: "37e01af07d0663ff9dce75daced565ce"
@@ -39,4 +37,17 @@ plugins:
 #         callback_fail:      "/fail"
 #         scope:              "email friends"
 
-session: 'YAML'
+plugins:
+    Auth::Extensible:
+        realms:
+            users:
+                provider: 'DBIC'
+                disable_roles: 1
+
+        login_page_handler: 'app::login_page_handler'
+        permission_denied_page_handler: 'app::permission_denied_page_handler'
+
+    DBIC:
+        default:
+            dsn: 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database=MovieWorld;UID=movieworld;PWD=movies'
+            schema_class: MovieWorld::Schema

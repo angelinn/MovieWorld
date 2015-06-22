@@ -1,3 +1,11 @@
 <section class="section container">
 	<h2> You have logged out. </h2>
 </section>
+
+<script>
+	(function () {
+		setTimeout(function() {
+			window.location.href = '/';
+		}, 1000);
+	})();
+</script>

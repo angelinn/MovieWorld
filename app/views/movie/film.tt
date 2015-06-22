@@ -36,10 +36,6 @@
 				<td><% duration %></td>
 			</tr>
 			<tr>
-				<td>Awards:</td>
-				<td><% awards %></td>
-			</tr>
-			<tr>
 				<td>Country:</td>
 				<td><% country %></td>
 			</tr>

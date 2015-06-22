@@ -3,7 +3,6 @@ package app;
 use v5.012;
 use strict;
 use warnings;
-use utf8;
 
 use Dancer ':syntax';
 use Dancer::Plugin::Auth::Extensible;
@@ -15,17 +14,16 @@ use IMDB::Film;
 
 our $VERSION = '0.1';
 
-set warnings => 'false';
-
-my $user = undef;
-
 get '/' => sub {
     return template 'index';
 };
 
+get '/profile' => require_login sub {
+
+};
+
 post '/movie' => sub {
 	my $film = new IMDB::Film(crit => params->{movieName});
-	debug "Name of the movie " . params->{movieName};
 
 	return template 'movie/film', { 
 		code => $film->code(),
@@ -34,13 +32,11 @@ post '/movie' => sub {
 		cover => $film->cover(),
 		kind => $film->kind(),
 		plot => $film->plot(),
-		genres => \$film->genres(),
+		genres => (join ', ', @{$film->genres()}),
 		storyline => $film->storyline(),
 		duration => $film->duration(),
-		#country => @{ $film->country() },
-		#language => @{ $film->language() },
-		#awards => @{ $film->awards()},
-
+		country => (join ', ', @{$film->country()}),
+		language => (join ', ', @{$film->language()}),
 	};
 };
 

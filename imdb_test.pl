@@ -21,6 +21,7 @@ my %hash = (
 	country => $film->country(),
 	language => $film->language(),
 	awards => $film->awards(),
+	recommended => $film->recommendation_movies(),
 );
 
 say 'Code ' . $hash{'code'};
@@ -33,3 +34,7 @@ say 'Duration ' . $hash{'duration'};
 say 'Country ' . join ' ', @{$hash{'country'}};
 say 'Language ' . $hash{'language'};
 say 'Awards ' . $hash{'awards'};
+
+
+my %rec = $film->recommendation_movies();
+say 'Recommended: ' . %rec;

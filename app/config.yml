@@ -18,9 +18,9 @@ charset: "UTF-8"
 # simple: default and very basic template engine
 # template_toolkit: TT
 
-template: "simple"
+# template: "simple"
 
-# template: "template_toolkit"
+template: "template_toolkit"
 # engines:
 #   template_toolkit:
 #     start_tag: '[%'
@@ -29,14 +29,6 @@ template: "simple"
 # For session support enable the following line and see Dancer::Session
 session: "YAML"
 
-#     'Auth::Facebook':
-#         application_id:     "858996744177704"
-#         application_secret: "37e01af07d0663ff9dce75daced565ce"
-#         callback_url:       "http://localhost:3000/auth/facebook/callback"
-#         callback_success:   "/"
-#         callback_fail:      "/fail"
-#         scope:              "email friends"
-
 plugins:
     Auth::Extensible:
         realms:
@@ -44,10 +36,20 @@ plugins:
                 provider: 'DBIC'
                 disable_roles: 1
 
-        login_page_handler: 'app::login_page_handler'
-        permission_denied_page_handler: 'app::permission_denied_page_handler'
+        no_default_pages: 1	
+        no_login_handler: 1
+        #login_page_handler: 'app::login_page_handler'
+        #permission_denied_page_handler: 'app::permission_denied_page_handler'
 
     DBIC:
         default:
             dsn: 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database=MovieWorld;UID=movieworld;PWD=movies'
             schema_class: MovieWorld::Schema
+
+    #     'Auth::Facebook':
+	#         application_id:     "858996744177704"
+	#         application_secret: "37e01af07d0663ff9dce75daced565ce"
+	#         callback_url:       "http://localhost:3000/auth/facebook/callback"
+	#         callback_success:   "/"
+	#         callback_fail:      "/fail"
+	#         scope:              "email friends"

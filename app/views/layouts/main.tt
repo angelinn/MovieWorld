@@ -25,13 +25,24 @@
               <a href="/alt">Alt</a>
             </li>
             <li>
+              <a href="/moviesearch">Find Movie</a>
+            </li>
+            <li>
               <a href="/about">About</a>
             </li>
+            <li>
+              <a href="/logintest">Login Test</a>
+            </li>  
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
+            <% IF session.logged_in_user %>
+            <li><a href="#">Hello <% session.logged_in_user %>!</a></li>
+            <li><a href="/logout">Logout</a></li>
+            <% ELSE %>
             <li><a href="/login">Login</a></li>
             <li><a href="/register">Register</a></li>
+            <% END %>
           </ul>
         </div>
       </div>

@@ -1,9 +1,16 @@
 <section class="container">
 	<div class="row">
 		<div class="col-md-offset-4 col-md-4">
-			<form method="post">
+			<form method="post" action="/login">
 				<h3> Login </h3>
 				<hr />
+
+				<% IF message %>
+				<div class="alert alert-<% alert_class %>">
+					<% message %>
+				</div>
+				<% END %>
+
 				<div class="form-group">
 					<label> Username </label>
 					<input type="text" class="form-control" name="username" />

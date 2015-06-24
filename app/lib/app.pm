@@ -30,22 +30,29 @@ get '/add-movie' => require_login sub {
 
 get '/my-movies' => require_login sub {
 	my $schema = MovieWorld::Schema->connect($dsn);
-	my @artists = $schema->resultset('Movie')->all;
+	my $user = logged_in_user;
+	my @user_reviews = $user->user_reviews;
+	my %viewbag;
 
-	my $res = '';
-	foreach my $artist (@artists) {
-		#$res = "$res" . $artist->{title} . "\n";
-		return $artist->title;
+	for my $ur (@user_reviews) {
+		debug $ur->movie->title;
+		debug $ur->review->review;
+		$viewbag{$ur->movie->title} = $ur->review->review;
 	}
 
-	return $res;
+	for (keys %viewbag) {
+		debug $_;
+		debug $viewbag{$_};
+	}
+
+	return template 'movie/my_movies', { viewbag => \%viewbag };
 };
 
 post '/add-movie' => require_login sub {
 	my $film = new IMDB::Film(crit => params->{title});
 	my $schema = MovieWorld::Schema->connect($dsn);
 
-	my $doesExist = $schema->resultset('Movie')->search( { title => params->{title} })->next;
+	my $doesExist = $schema->resultset('Movie')->search( { title => params->{title} } )->next;
 	unless ($doesExist) {
 		my $movie = $schema->resultset('Movie')->new({ 
 			id => $film->code(),
@@ -53,9 +60,24 @@ post '/add-movie' => require_login sub {
 		});
 		$movie->insert;
 	}
+
+	my $review = $schema->resultset('Review')->new({
+		review => params->{review},
+	});
+	$review->insert;
+
+	my $reviewWithID= $schema->resultset('Review')->search( { review => params->{review} })->next;
+
+	my $user = logged_in_user;
+	my $link = $schema->resultset('UserReview')->new({
+		user_id => $user->id,
+		review_id => $reviewWithID->id,
+		movie_id => $film->code()
+	});
+	$link->insert;
 };
 
-post '/movie' => sub {
+get '/movie' => sub {
 	my $film = new IMDB::Film(crit => params->{movieName});
 
 	return template 'movie/film', { 

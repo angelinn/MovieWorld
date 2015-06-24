@@ -1,0 +1,12 @@
+<section class="section container">
+
+<% FOREACH iter in viewbag %>
+<div class="col-md-5">
+	<img src="/images/note.png" />
+	<h3> Title: <% iter.key %> </h3>
+	<p> Review: <% iter.value %> </p>
+	<a class="btn btn-primary" href="/movie?movieName=<% iter.key %>">View More..</a>
+</div>
+<% END %>
+
+</section>	

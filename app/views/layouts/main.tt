@@ -9,8 +9,9 @@
 <header class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <!-- <img style="size: 20px" src="/images/logo.png" /> -->
           <a href="/" class="navbar-brand">Movie World</a>
+          <img class="navbar-brand" src="/images/logo.png" />
+          
           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -21,9 +22,6 @@
           <ul class="nav navbar-nav">
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
-            </li>
-            <li>
-              <a href="/alt">Alt</a>
             </li>
             <li>
               <a href="/moviesearch">Find Movie</a>
@@ -38,7 +36,7 @@
 
           <ul class="nav navbar-nav navbar-right">
             <% IF session.logged_in_user %>
-            <li><a href="#">Hello <% session.logged_in_user %>!</a></li>
+            <li><a href="/profile">Hello, <% session.logged_in_user %>!</a></li>
             <li><a href="/logout">Logout</a></li>
             <% ELSE %>
             <li><a href="/login">Login</a></li>
@@ -57,7 +55,16 @@
 	<br />
 	<a href="mailto:betrakiss@hotmail.com"> Angelin Nedelchev &reg 2015 </a>
 </footer>
+
 <script type="text/javascript" src="<% request.uri_base %>/javascripts/jquery-1.11.3.js"></script>
 <script type="text/javascript" src="<% request.uri_base %>/javascripts/bootstrap.js"></script>
+<script>
+  function httpGet(theUrl, callback) {
+    $.ajax({
+      url: theUrl,
+      method: 'GET'
+    }).then(callback);
+  }
+</script>
 </body>
 </html>

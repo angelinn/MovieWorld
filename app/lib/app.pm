@@ -12,6 +12,8 @@ use Dancer::Session;
 use MovieWorld::Schema;
 use IMDB::Film;
 
+my $dsn = 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database=MovieWorld;UID=movieworld;PWD=movies';
+
 our $VERSION = '0.1';
 
 get '/' => sub {
@@ -19,7 +21,38 @@ get '/' => sub {
 };
 
 get '/profile' => require_login sub {
+	return template 'account/profile';
+};
 
+get '/add-movie' => require_login sub {
+	return template 'movie/add_movie';
+};
+
+get '/my-movies' => require_login sub {
+	my $schema = MovieWorld::Schema->connect($dsn);
+	my @artists = $schema->resultset('Movie')->all;
+
+	my $res = '';
+	foreach my $artist (@artists) {
+		#$res = "$res" . $artist->{title} . "\n";
+		return $artist->title;
+	}
+
+	return $res;
+};
+
+post '/add-movie' => require_login sub {
+	my $film = new IMDB::Film(crit => params->{title});
+	my $schema = MovieWorld::Schema->connect($dsn);
+
+	my $doesExist = $schema->resultset('Movie')->search( { title => params->{title} })->next;
+	unless ($doesExist) {
+		my $movie = $schema->resultset('Movie')->new({ 
+			id => $film->code(),
+			title => params->{title}
+		});
+		$movie->insert;
+	}
 };
 
 post '/movie' => sub {
@@ -40,12 +73,19 @@ post '/movie' => sub {
 	};
 };
 
+get '/movie-image/:title' => sub {
+	my $film = new IMDB::Film(crit => params->{title});
+
+	content_type 'text/plain';
+	return $film->cover();
+};
+
 get '/moviesearch' => sub {
 	return template 'movie/movie_search'
 };
 
-get '/alt' => sub {
-	return template 'movie/movie_alt';
+get '/about' => sub { 
+	return template 'general/about';
 };
 
 get '/register' => sub {
@@ -54,7 +94,7 @@ get '/register' => sub {
 
 get '/logintest' => require_login sub {	
 	my $user = logged_in_user;
-	return "You're logged in! $user->{username}";
+	return "You're logged in!";
 };
 
 get '/logout' => sub {
@@ -74,7 +114,6 @@ post '/login' => sub {
 };
 
 post '/register' => sub {
-	my $dsn = 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database=MovieWorld;UID=movieworld;PWD=movies';
 	my $schema = MovieWorld::Schema->connect($dsn);
 
 	my $doesExist = $schema->resultset('User')->search( { username => params->{username} })->next;

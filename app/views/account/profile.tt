@@ -1,0 +1,5 @@
+<section class="section container">
+	<a href="/add-movie" class="btn btn-primary"> Add Movie </a>
+	<a href="/my-movies" class="btn btn-success"> My Movies </a>
+
+</section>

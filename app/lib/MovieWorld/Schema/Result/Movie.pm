@@ -14,7 +14,12 @@ __PACKAGE__->add_columns(
     title => {
         data_type => 'VARCHAR',
         size => 64,
-        is_nullable => 0,
+        is_nullable => 0
+    },
+    image_url => {
+        data_type => 'VARCHAR',
+        size => 128,
+        is_nullable => 1
     }
 );
 

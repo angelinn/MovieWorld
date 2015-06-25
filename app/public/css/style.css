@@ -12,13 +12,19 @@ body {
 }
 
 .navbar-default .navbar-brand {
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .navbar-default .navbar-nav > li > a {
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .a-bit-lower {
 	margin-top: 12px;
+}
+
+.truncate-text {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

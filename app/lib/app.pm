@@ -16,13 +16,79 @@ my $dsn = 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database
 
 our $VERSION = '0.1';
 
+
+### GENERAL CONTROLLER 
+
 get '/' => sub {
     return template 'index';
+};
+
+get '/about' => sub { 
+	return template 'general/about';
+};
+
+### END GENERAL CONTROLLER
+
+### ACCOUNT CONTROLLER
+
+get '/login' => sub {
+	return template 'account/login';
+};
+
+post '/login' => sub {
+	my ($success, $realm) = authenticate_user(params->{username}, params->{password});
+    if ($success) {
+        session logged_in_user => params->{username};
+        session logged_in_user_realm => $realm;
+        
+        return template 'index';
+    } 
+	return template 'account/login', { message => 'Login failed.', alert_class => 'danger' };
+};
+
+get '/login/denied' => sub {
+	return template 'account/denied';
+};
+
+get '/logout' => sub {
+	session->destroy;
+	return template 'account/logged_out'
+};
+
+get '/logintest' => require_login sub {	
+	return "You're logged in!";
+};
+
+get '/register' => sub {
+	return template 'account/register';
+};
+
+post '/register' => sub {
+	my $schema = MovieWorld::Schema->connect($dsn);
+
+	my $doesExist = $schema->resultset('User')->search( { username => params->{username} })->next;
+	if ($doesExist) {
+		return template 'account/register', { message => ' Username already exists.', alert_class => 'danger' };
+	}
+	if (params->{password} eq params->{confirm}) {
+		my $user = $schema->resultset('User')->new({ 
+			username => params->{username},
+			password => params->{password}
+		});
+
+		$user->insert;
+		return template 'account/login', { message => 'Account created. You can now log in.', alert_class => 'success' };
+	}
+	return template 'account/register', { message => 'Both passwords must match', alert_class => 'info' }
 };
 
 get '/profile' => require_login sub {
 	return template 'account/profile';
 };
+
+### END ACCOUNT CONTROLLER
+
+### MOVIE CONTROLLER
 
 get '/add-movie' => require_login sub {
 	return template 'movie/add_movie';
@@ -37,7 +103,7 @@ get '/my-movies' => require_login sub {
 	for my $ur (@user_reviews) {
 		debug $ur->movie->title;
 		debug $ur->review->review;
-		$viewbag{$ur->movie->title} = $ur->review->review;
+		$viewbag{$ur->movie->title} = { review => $ur->review, image_url => $ur->movie->image_url };
 	}
 
 	for (keys %viewbag) {
@@ -56,13 +122,15 @@ post '/add-movie' => require_login sub {
 	unless ($doesExist) {
 		my $movie = $schema->resultset('Movie')->new({ 
 			id => $film->code(),
-			title => params->{title}
+			title => $film->title(),
+			image_url => $film->cover()
 		});
 		$movie->insert;
 	}
 
 	my $review = $schema->resultset('Review')->new({
 		review => params->{review},
+		rating => params->{rating}
 	});
 	$review->insert;
 
@@ -75,6 +143,18 @@ post '/add-movie' => require_login sub {
 		movie_id => $film->code()
 	});
 	$link->insert;
+
+	return redirect '/my-movies';
+};
+
+get '/review/:id' => sub {
+	my $link = $schema->resultset('UserReview')->search({ id => params->{id}});
+	my %viewbag;
+	$viewbag{movie} = $link->movie;
+	$viewbag{username} = $link->user->username;
+	$viewbag{review} = $link->review;
+
+	return template 'movie/review', { viewbag => \%viewbag };
 };
 
 get '/movie' => sub {
@@ -106,53 +186,10 @@ get '/moviesearch' => sub {
 	return template 'movie/movie_search'
 };
 
-get '/about' => sub { 
-	return template 'general/about';
-};
+### END MOVIE CONTROLLER
 
-get '/register' => sub {
-	return template 'account/register';
-};
 
-get '/logintest' => require_login sub {	
-	my $user = logged_in_user;
-	return "You're logged in!";
-};
 
-get '/logout' => sub {
-	session->destroy;
-	return template 'account/logged_out'
-};
-
-post '/login' => sub {
-	my ($success, $realm) = authenticate_user(params->{username}, params->{password});
-    if ($success) {
-        session logged_in_user => params->{username};
-        session logged_in_user_realm => $realm;
-        
-        return template 'index';
-    } 
-	return template 'account/login', { message => 'Login failed.', alert_class => 'danger' };
-};
-
-post '/register' => sub {
-	my $schema = MovieWorld::Schema->connect($dsn);
-
-	my $doesExist = $schema->resultset('User')->search( { username => params->{username} })->next;
-	if ($doesExist) {
-		return template 'account/register', { message => ' Username already exists.', alert_class => 'danger' };
-	}
-	if (params->{password} eq params->{confirm}) {
-		my $user = $schema->resultset('User')->new({ 
-			username => params->{username},
-			password => params->{password}
-		});
-
-		$user->insert;
-		return template 'account/login', { message => 'Account created. You can now log in.', alert_class => 'success' };
-	}
-	return template 'account/register', { message => 'Both passwords must match', alert_class => 'info' }
-};
 # auth_fb_init();
  
 # hook before =>  sub {
@@ -163,12 +200,6 @@ post '/register' => sub {
 #   }
 # };
  
-get '/login' => sub {
-	return template 'account/login';
-};
 
-get '/login/denied' => sub {
-	return template 'account/denied';
-};
 
 1;

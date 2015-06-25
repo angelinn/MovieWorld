@@ -20,9 +20,6 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
           <ul class="nav navbar-nav">
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
-            </li>
             <li>
               <a href="/moviesearch">Find Movie</a>
             </li>
@@ -36,7 +33,16 @@
 
           <ul class="nav navbar-nav navbar-right">
             <% IF session.logged_in_user %>
-            <li><a href="/profile">Hello, <% session.logged_in_user %>!</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              Hello, <% session.logged_in_user %>!<span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/profile">My Profile</a></li>
+                <li><a href="/add-movie">Add movie</a></li>
+                <li><a href="/my-movies">My Movies</a></li>
+              </ul>
+            </li>
             <li><a href="/logout">Logout</a></li>
             <% ELSE %>
             <li><a href="/login">Login</a></li>
@@ -46,6 +52,10 @@
         </div>
       </div>
 </header>
+
+<% IF alert %>
+<div class="alert alert-<% alert-class %>"><% alert %></div>
+<% END %>
 
 <% content %>
 

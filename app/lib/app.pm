@@ -16,7 +16,6 @@ my $dsn = 'dbi:ODBC:Driver={SQL Server};Server=BETSY-TOSHIBA\SQLEXPRESS;Database
 
 our $VERSION = '0.1';
 
-
 ### GENERAL CONTROLLER 
 
 get '/' => sub {
@@ -25,6 +24,18 @@ get '/' => sub {
 
 get '/about' => sub { 
 	return template 'general/about';
+};
+
+post '/message' => sub {
+	debug params->{redirectUrl};
+	debug params->{status};
+	debug params->{message}; 
+
+	return template 'general/message', { 
+		redirectUrl => params->{redirectUrl},
+		alert_class => params->{status},
+		message => params->{message} 
+	};
 };
 
 ### END GENERAL CONTROLLER
@@ -52,7 +63,7 @@ get '/login/denied' => sub {
 
 get '/logout' => sub {
 	session->destroy;
-	return template 'account/logged_out'
+	return redirect '/message/info/YouHaveBeenLoggedOut/'
 };
 
 get '/logintest' => require_login sub {	
@@ -105,12 +116,7 @@ get '/my-movies' => require_login sub {
 		debug $ur->review->review;
 		$viewbag{$ur->movie->title} = { review => $ur->review, image_url => $ur->movie->image_url };
 	}
-
-	for (keys %viewbag) {
-		debug $_;
-		debug $viewbag{$_};
-	}
-
+	
 	return template 'movie/my_movies', { viewbag => \%viewbag };
 };
 
@@ -144,10 +150,15 @@ post '/add-movie' => require_login sub {
 	});
 	$link->insert;
 
-	return redirect '/my-movies';
+	return template 'general/message', { 
+		message => 'Movie added successfully!',
+		alert_class => 'success',
+		redirectUrl => '/my-movies'
+	};
 };
 
 get '/review/:id' => sub {
+	my $schema = MovieWorld::Schema->connect($dsn);
 	my $link = $schema->resultset('UserReview')->search({ id => params->{id}});
 	my %viewbag;
 	$viewbag{movie} = $link->movie;
@@ -187,7 +198,6 @@ get '/moviesearch' => sub {
 };
 
 ### END MOVIE CONTROLLER
-
 
 
 # auth_fb_init();

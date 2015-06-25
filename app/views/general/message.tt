@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="col-md-offset-4 col-md-4">
+    <div class="alert alert-<% alert_class %>"><% message %></div>
+  </div>
+</div>
+
+<script>
+	(function () {
+		setTimeout(function() {
+			window.location.href = '<% redirectUrl %>';
+		}, 1000);
+	})();
+</script>

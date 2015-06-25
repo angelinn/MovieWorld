@@ -1,16 +1,22 @@
 <section class="section container">
-
 	<h1> <% session.logged_in_user %>&rsquo;s Reviews </h1> <hr />
-
+	<div class="row">
+	<% i = 0 %>
 	<% FOREACH iter in viewbag %>
-	<div class="col-md-3">
-		<img src="<% iter.value.image_url %>" />
-		<h3> <strong><% iter.key %></strong> </h3>
-		<p class="truncate-text"> Review: <% iter.value.review.review %> </p>
-		<h4> Rating: <% iter.value.review.rating %> </h4>
-		<a class="btn btn-primary" href="/movie?movieName=<% iter.key %>">View More..</a>
+	<% IF i % 4 == 0 %>
 	</div>
+	<div class="row">
 	<% END %>
+		<div class="col-md-3">
+			<img src="<% iter.value.image_url %>" />
+			<h3> <strong><% iter.key %></strong> </h3>
+			<p class="truncate-text"> Review: <% iter.value.review.review %> </p>
+			<h4> Rating: <% iter.value.review.rating %> </h4>
+			<a class="btn btn-primary" href="/movie?movieName=<% iter.key %>">View More..</a>
+		</div>
+	<% i = i + 1 %>
+	<% END %>
+	</div>
 
 <!-- <iframe width="480" height="270" src="//v.traileraddict.com/29130" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no" frameborder="0"></iframe> <p><a href="http://www.traileraddict.com/spider-man-3/featurette-inside-look">Featurette - Inside Look</a> for <a href="http://www.traileraddict.com/spider-man-3">Spider-Man 3</a> on <a href="http://www.traileraddict.com">TrailerAddict</a>.</p> -->
 

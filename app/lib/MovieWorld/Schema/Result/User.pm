@@ -1,4 +1,4 @@
-    package MovieWorld::Schema::Result::User;
+package MovieWorld::Schema::Result::User;
  
 use strict;
 use warnings;

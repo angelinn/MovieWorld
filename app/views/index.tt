@@ -1,15 +1,32 @@
 <section class="container">
-  <div class="jumbotron">
-  	<h1> Welcome to Movie World! </h1>
-  	<h3> Website about movie lovers! </h3> 
-  </div>
+<div style="background:#FFFFFF !important;" class="jumbotron text-center">
+	<h1> Welcome to Movie World! </h1>
+	<h3> Website about movie lovers </h3>
 
-<h2> Latest registered movies: </h2>
-<% s = 10 %>
-<% viewbag.$s %>
+	<% IF session.logged_in_user %>
+	<hr />
+	<h3> Hi there, <% session.logged_in_user %>! </h3>	<% ELSE %>
 
-<% FOREACH l in keys %>
-	<% l %> - <% latest.$l.title %> from <% latest.$l %><br />
+	<% END %>
+</div>
+
+<hr /><h2 class="text-center"> Latest Reviews: </h2> <hr />
+<div class="row">
+<% i = 0 %>
+<% FOREACH key in keys %>
+<% IF i % 4 == 0 %>
+</div>
+<div class="row">
 <% END %>
+	<div class="col-md-3">
+		<img src="<% latest.$key.image_url %>" />
+		<h3> <strong><% latest.$key.title %> <br /> by #<% latest.$key.user %></strong> </h3>
+		<p class="truncate-text"> Review: <% latest.$key.review.review %> </p>
+		<h4> Rating: <% latest.$key.review.rating %> </h4>
+		<a class="btn btn-primary" href="/movie?movieName=<% latest.$key.title %>">View More..</a>
+	</div>
+<% i = i + 1 %>
+<% END %>
+</div>
 
 </section>

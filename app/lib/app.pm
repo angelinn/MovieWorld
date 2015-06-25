@@ -24,7 +24,7 @@ get '/' => sub {
 	my %viewbag;
 
 	map { 
-		$viewbag{$_->review_id} =  { review => $_->review, image_url => $_->movie->image_url, title => $_->movie->title };
+		$viewbag{$_->review_id} =  { review => $_->review, image_url => $_->movie->image_url, title => $_->movie->title, user => $_->user->username };
 	} @latest;
 
 	my @descKeys = sort { $b <=> $a } keys %viewbag;

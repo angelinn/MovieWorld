@@ -17,7 +17,4 @@
 	<% i = i + 1 %>
 	<% END %>
 	</div>
-
-<!-- <iframe width="480" height="270" src="//v.traileraddict.com/29130" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no" frameborder="0"></iframe> <p><a href="http://www.traileraddict.com/spider-man-3/featurette-inside-look">Featurette - Inside Look</a> for <a href="http://www.traileraddict.com/spider-man-3">Spider-Man 3</a> on <a href="http://www.traileraddict.com">TrailerAddict</a>.</p> -->
-
 </section>	

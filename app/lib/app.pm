@@ -19,23 +19,20 @@ our $VERSION = '0.1';
 ### GENERAL CONTROLLER 
 
 get '/' => sub {
-    return template 'index';
+	my $schema = MovieWorld::Schema->connect($dsn);
+	my @latest = $schema->resultset('UserReview')->search(undef, { order_by => { -desc => 'review_id'}, rows => 4 });
+	my %viewbag;
+
+	map { 
+		$viewbag{$_->review_id} =  { review => $_->review, image_url => $_->movie->image_url, title => $_->movie->title };
+	} @latest;
+
+	my @descKeys = sort { $b <=> $a } keys %viewbag;
+    return template 'index', { latest => \%viewbag, keys => \@descKeys };
 };
 
 get '/about' => sub { 
 	return template 'general/about';
-};
-
-post '/message' => sub {
-	debug params->{redirectUrl};
-	debug params->{status};
-	debug params->{message}; 
-
-	return template 'general/message', { 
-		redirectUrl => params->{redirectUrl},
-		alert_class => params->{status},
-		message => params->{message} 
-	};
 };
 
 ### END GENERAL CONTROLLER
@@ -107,16 +104,13 @@ get '/add-movie' => require_login sub {
 
 get '/my-movies' => require_login sub {
 	my $schema = MovieWorld::Schema->connect($dsn);
-	my $user = logged_in_user;
-	my @user_reviews = $user->user_reviews;
+	my @user_reviews = logged_in_user->user_reviews(undef, { order_by => 'review_id' });
 	my %viewbag;
 
-	for my $ur (@user_reviews) {
-		debug $ur->movie->title;
-		debug $ur->review->review;
-		$viewbag{$ur->movie->title} = { review => $ur->review, image_url => $ur->movie->image_url };
-	}
-	
+	map {
+		$viewbag{$_->movie->title} = { review => $_->review, image_url => $_->movie->image_url };
+	} @user_reviews;
+
 	return template 'movie/my_movies', { viewbag => \%viewbag };
 };
 
@@ -141,10 +135,8 @@ post '/add-movie' => require_login sub {
 	$review->insert;
 
 	my $reviewWithID= $schema->resultset('Review')->search( { review => params->{review} })->next;
-
-	my $user = logged_in_user;
 	my $link = $schema->resultset('UserReview')->new({
-		user_id => $user->id,
+		user_id => logged_in_user->id,
 		review_id => $reviewWithID->id,
 		movie_id => $film->code()
 	});

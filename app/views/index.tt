@@ -1,7 +1,15 @@
 <section class="container">
   <div class="jumbotron">
-  	<h1> Index </h1>
-  	<h3> Website about movie lovers! </h3>
+  	<h1> Welcome to Movie World! </h1>
+  	<h3> Website about movie lovers! </h3> 
   </div>
+
+<h2> Latest registered movies: </h2>
+<% s = 10 %>
+<% viewbag.$s %>
+
+<% FOREACH l in keys %>
+	<% l %> - <% latest.$l.title %> from <% latest.$l %><br />
+<% END %>
 
 </section>

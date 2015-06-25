@@ -1,11 +1,6 @@
 <section class="section container">
-	<form>
-		<div class="form-group">
-			<label> Enter you message </label>
-			<input type="text" class="form-control" />
-		</div>
-
-		<button class="btn btn-success"> Send! </button>
-	</form>
-
+	<strong> 
+	This Website is created for the Perl course @ <a href="http://fmi.uni-sofia.bg/"> FMI </a> @ Sofia University! <br />
+	For more information contact <a href="mailto:betrakiss@hotmail.com">betrakiss@hotmail.com</a>
+	</strong> 
 </section>

@@ -1,0 +1,16 @@
+<section class="section container">
+	<h1> <a href="/movie?movieName=<% viewbag.movie.title %>"><% viewbag.movie.title %></a></h1>
+	<h2> Review by #<% viewbag.user %></h2> 
+
+	<div class="row">
+		<div class="col-md-3">
+			<img src="<% viewbag.movie.image_url %>" />
+		</div>
+		<div class="col-md-7">
+			<strong> <% viewbag.review.review %> </strong>
+			<h3> Rating: <% viewbag.review.rating %><img style="margin: 0 0 5px 5px" src="/images/star.png" /></h3>
+		</div>
+	</div>	
+
+
+</section>

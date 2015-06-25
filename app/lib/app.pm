@@ -7,7 +7,6 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Plugin::Auth::Extensible;
 use Dancer::Session;
-#use Dancer::Plugin::Auth::Facebook;
 
 use MovieWorld::Schema;
 use IMDB::Film;
@@ -24,7 +23,12 @@ get '/' => sub {
 	my %viewbag;
 
 	map { 
-		$viewbag{$_->review_id} =  { review => $_->review, image_url => $_->movie->image_url, title => $_->movie->title, user => $_->user->username };
+		$viewbag{$_->review_id} =  { 
+			review => $_->review, 
+			image_url => $_->movie->image_url,
+			title => $_->movie->title, 
+			user => $_->user->username 
+		};
 	} @latest;
 
 	my @descKeys = sort { $b <=> $a } keys %viewbag;
@@ -49,7 +53,11 @@ post '/login' => sub {
         session logged_in_user => params->{username};
         session logged_in_user_realm => $realm;
         
-        return template 'index';
+        return template 'general/message', {
+        	alert_class => 'success',
+        	message => 'You are logged in!',
+        	redirectUrl => '/'
+    	};
     } 
 	return template 'account/login', { message => 'Login failed.', alert_class => 'danger' };
 };
@@ -60,11 +68,12 @@ get '/login/denied' => sub {
 
 get '/logout' => sub {
 	session->destroy;
-	return redirect '/message/info/YouHaveBeenLoggedOut/'
-};
 
-get '/logintest' => require_login sub {	
-	return "You're logged in!";
+	return template 'general/message', {
+		alert_class => 'info',
+		redirectUrl => '/',
+		message => 'You have logged out!'
+	}
 };
 
 get '/register' => sub {
@@ -91,7 +100,10 @@ post '/register' => sub {
 };
 
 get '/profile' => require_login sub {
-	return template 'account/profile';
+	my $schema = MovieWorld::Schema->connect($dsn);
+	my $count = logged_in_user->user_reviews->count;
+
+	return template 'account/profile', { count => $count };
 };
 
 ### END ACCOUNT CONTROLLER
@@ -102,20 +114,16 @@ get '/add-movie' => require_login sub {
 	return template 'movie/add_movie';
 };
 
-get '/my-movies' => require_login sub {
-	my $schema = MovieWorld::Schema->connect($dsn);
-	my @user_reviews = logged_in_user->user_reviews(undef, { order_by => 'review_id' });
-	my %viewbag;
-
-	map {
-		$viewbag{$_->movie->title} = { review => $_->review, image_url => $_->movie->image_url };
-	} @user_reviews;
-
-	return template 'movie/my_movies', { viewbag => \%viewbag };
-};
-
 post '/add-movie' => require_login sub {
 	my $film = new IMDB::Film(crit => params->{title});
+
+	unless (defined $film->title) {
+		return template 'general/message', {
+			message => 'Movie not found!',
+			alert_class => 'danger',
+			redirectUrl => '/add-movie'
+		};
+	}
 	my $schema = MovieWorld::Schema->connect($dsn);
 
 	my $doesExist = $schema->resultset('Movie')->search( { title => params->{title} } )->next;
@@ -149,12 +157,24 @@ post '/add-movie' => require_login sub {
 	};
 };
 
+get '/my-movies' => require_login sub {
+	my $schema = MovieWorld::Schema->connect($dsn);
+	my @user_reviews = logged_in_user->user_reviews(undef, { order_by => 'review_id' });
+	my %viewbag;
+
+	map {
+		$viewbag{$_->movie->title} = { review => $_->review, image_url => $_->movie->image_url };
+	} @user_reviews;
+
+	return template 'movie/my_movies', { viewbag => \%viewbag };
+};
+
 get '/review/:id' => sub {
 	my $schema = MovieWorld::Schema->connect($dsn);
-	my $link = $schema->resultset('UserReview')->search({ id => params->{id}});
+	my $link = $schema->resultset('UserReview')->search({ review_id => params->{id}})->next;
 	my %viewbag;
 	$viewbag{movie} = $link->movie;
-	$viewbag{username} = $link->user->username;
+	$viewbag{user} = $link->user->username;
 	$viewbag{review} = $link->review;
 
 	return template 'movie/review', { viewbag => \%viewbag };
@@ -178,6 +198,14 @@ get '/movie' => sub {
 	};
 };
 
+get '/moviesearch' => sub {
+	return template 'movie/movie_search'
+};
+
+### END MOVIE CONTROLLER
+
+### API
+
 get '/movie-image/:title' => sub {
 	my $film = new IMDB::Film(crit => params->{title});
 
@@ -185,23 +213,7 @@ get '/movie-image/:title' => sub {
 	return $film->cover();
 };
 
-get '/moviesearch' => sub {
-	return template 'movie/movie_search'
-};
-
-### END MOVIE CONTROLLER
-
-
-# auth_fb_init();
- 
-# hook before =>  sub {
-#   #we don't want a redirect loop here.
-#   return if request->path =~ m{/auth/facebook/callback};
-#   if (not session('fb_user')) {
-#      redirect auth_fb_authenticate_url;
-#   }
-# };
- 
+### END API
 
 
 1;

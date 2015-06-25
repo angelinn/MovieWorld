@@ -1,5 +1,11 @@
 <section class="section container">
-	<a href="/add-movie" class="btn btn-primary"> Add Movie </a>
+	<h1 class="section-header"> My Profile </h1> <hr />
+	<h2> Username: <% session.logged_in_user %> </h2> 
+	<h3> Total reviews: <% count %> </h3>
+
+	<hr />
+	<h2> Actions: </h2>
+	<a href="/add-movie" class="btn btn-primary"> Add Movie </a> 
 	<a href="/my-movies" class="btn btn-success"> My Movies </a>
 
 </section>

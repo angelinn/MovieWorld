@@ -10,7 +10,7 @@
 	<% END %>
 </div>
 
-<hr /><h2 class="text-center"> Latest Reviews: </h2> <hr />
+<hr /><h1 class="text-center"> Latest Reviews: </h1> <hr />
 <div class="row">
 <% i = 0 %>
 <% FOREACH key in keys %>
@@ -23,7 +23,7 @@
 		<h3> <strong><% latest.$key.title %> <br /> by #<% latest.$key.user %></strong> </h3>
 		<p class="truncate-text"> Review: <% latest.$key.review.review %> </p>
 		<h4> Rating: <% latest.$key.review.rating %> </h4>
-		<a class="btn btn-primary" href="/movie?movieName=<% latest.$key.title %>">View More..</a>
+		<a class="btn btn-primary" href="/review/<% latest.$key.review.id %>">View More..</a>
 	</div>
 <% i = i + 1 %>
 <% END %>

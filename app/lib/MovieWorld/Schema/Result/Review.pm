@@ -19,6 +19,10 @@ __PACKAGE__->add_columns(
     rating => {
         data_type => 'INTEGER',
         is_nullable => 0,
+    },
+    hits => {
+        data_type => 'INTEGER',
+        is_nullable => 1
     }
 );
  

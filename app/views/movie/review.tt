@@ -12,5 +12,11 @@
 		</div>
 	</div>	
 
+	<div class="row">
+		<div class="col-md-3">
+		<h3> Hits: <% viewbag.review.hits %> </h3>
+		</div>
+	</div>
+
 
 </section>

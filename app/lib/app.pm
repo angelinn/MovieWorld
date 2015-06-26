@@ -173,6 +173,14 @@ get '/review/:id' => sub {
 	my $schema = MovieWorld::Schema->connect($dsn);
 	my $link = $schema->resultset('UserReview')->search({ review_id => params->{id}})->next;
 	my %viewbag;
+
+	unless (defined $link->review->hits) {
+		$link->review->hits(0)
+	}
+
+	$link->review->hits($link->review->hits + 1);
+	$link->review->update;
+
 	$viewbag{movie} = $link->movie;
 	$viewbag{user} = $link->user->username;
 	$viewbag{review} = $link->review;
